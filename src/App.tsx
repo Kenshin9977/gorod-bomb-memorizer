@@ -3,17 +3,17 @@ import mapImg from "./assets/gk-bomb-zones_map.png";
 import zonesData from "./assets/zones.json";
 
 type Zone = {
-  id: string;
+  id: number;
   label: string;
   png: string;
-  svgPaths: string;
+  svgPaths: string[];
 };
 
 export default function App() {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
   const zones: Zone[] = zonesData;
 
-  const toggleZone = (id: string) => {
+  const toggleZone = (id: number) => {
     setSelected(prev =>
       prev.includes(id) ? prev.filter(z => z !== id) : [...prev, id]
     );
@@ -41,9 +41,9 @@ export default function App() {
         <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 2048 1024">
           {zones.map(zone => (
             <g key={zone.id} onClick={() => toggleZone(zone.id)}>
-              {zone.svgPaths.map((d, i) => (
+              {zone.svgPaths.map((d: string, i: number) => (
                 <path
-                  key={i}
+                  key={`${zone.id}-${i}`}
                   d={d}
                   fill="transparent"
                   stroke="transparent"
