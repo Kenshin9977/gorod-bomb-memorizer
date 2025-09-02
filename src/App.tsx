@@ -2,10 +2,26 @@ import { useState } from "react";
 import mapImg from "./assets/gk-bomb-zones_map.png";
 import zonesData from "./assets/zones.json";
 
+import dept_store_png from "./assets/gk-bomb-zones_dept_store.png"
+import dragon_command_png from "./assets/gk-bomb-zones_dragon_command.png"
+import infirmary_png from "./assets/gk-bomb-zones_infirmary.png"
+import armory_png from "./assets/gk-bomb-zones_armory.png"
+import supply_depot_png from "./assets/gk-bomb-zones_supply_depot.png"
+import tank_factory_png from "./assets/gk-bomb-zones_tank_factory.png"
+
+const pngMap: Record<string, string> = {
+  dept_store: dept_store_png,
+  dragon_command: dragon_command_png,
+  infirmary: infirmary_png,
+  armory: armory_png,
+  supply_depot: supply_depot_png,
+  tank_factory: tank_factory_png,
+};
+
 type Zone = {
   id: number;
   label: string;
-  png: string;
+  key: string;
   svgPaths: string[];
 };
 
@@ -27,11 +43,12 @@ export default function App() {
         {/* PNG sélectionnés */}
         {selected.map(id => {
           const zone = zones.find(z => z.id === id);
+          if (!zone) return null;
           return (
             <img
               key={id}
-              src={zone?.png}
-              alt={zone?.label}
+              src={pngMap[zone.key]}
+              alt={zone.label}
               className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none"
             />
           );
