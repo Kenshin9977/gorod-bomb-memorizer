@@ -1,8 +1,0 @@
-[
-    { "id": 1, "label": "Dept. Store", "x": 180, "y": 145, "width": 125, "height": 60 },
-    { "id": 2, "label": "Dragon Command", "x": 197, "y": 45, "width": 90, "height": 33 },
-    { "id": 3, "label": "Infirmary", "x": 183, "y": 95, "width": 55, "height": 35 },
-    { "id": 4, "label": "Armory", "x": 250, "y": 95, "width": 50, "height": 35 },
-    { "id": 5, "label": "Supply Depot", "x": 322, "y": 83, "width": 97, "height": 69 },
-    { "id": 6, "label": "Tank Factory", "x": 60, "y": 70, "width": 97, "height": 90 }
-]
