@@ -1,82 +1,84 @@
 import { useState } from "react";
-import mapImage from "./assets/Gorod_map_dragon_command.jpg";
-import zonesData from "./zones.json";
+import mapImg from "./assets/gk-bomb-zones_map.png";
+import zonesData from "./assets/zones.json";
 
 type Zone = {
-  id: number;
+  id: string;
   label: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  png: string;
+  svgPaths: string;
 };
 
-function App() {
-  const [sequence, setSequence] = useState<Zone[]>([]);
+export default function App() {
+  const [selected, setSelected] = useState<string[]>([]);
   const zones: Zone[] = zonesData;
 
-  const toggleZone = (zone: Zone) => {
-    setSequence((prev) =>
-      prev.find((z) => z.id === zone.id)
-        ? prev.filter((z) => z.id !== zone.id)
-        : [...prev, zone]
+  const toggleZone = (id: string) => {
+    setSelected(prev =>
+      prev.includes(id) ? prev.filter(z => z !== id) : [...prev, id]
     );
   };
 
-  const reset = () => setSequence([]);
-
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-black">
-      {/* Image de fond */}
-      <div className="relative w-[500px] h-[300px]">
-        <img
-          src={mapImage}
-          alt="Gorod Map"
-          className="w-full h-full object-cover rounded-lg"
-        />
+    <div className="relative flex flex-col items-center bg-gray-900 min-h-screen p-4 text-white">
+      <div className="relative w-[500px] h-[250px]">
+        <img src={mapImg} alt="Map" className="w-full h-full object-contain" />
 
-        {/* Zones cliquables */}
-        {zones.map((zone) => {
-          const isSelected = sequence.find((z) => z.id === zone.id);
+        {/* PNG sélectionnés */}
+        {selected.map(id => {
+          const zone = zones.find(z => z.id === id);
           return (
-            <button
-              key={zone.id}
-              onClick={() => toggleZone(zone)}
-              title={zone.label}
-              className={`absolute rounded transition 
-                ${isSelected ? "border-green-500 bg-green-500/30" : "border-red-500 bg-transparent"}
-              hover:bg-blue-500/30 hover:border-blue-500`}
-              style={{
-                left: zone.x,
-                top: zone.y,
-                width: zone.width,
-                height: zone.height
-              }}
+            <img
+              key={id}
+              src={zone?.png}
+              alt={zone?.label}
+              className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none"
             />
           );
         })}
+
+        {/* SVG pour clic/hover */}
+        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 2048 1024">
+          {zones.map(zone => (
+            <g key={zone.id} onClick={() => toggleZone(zone.id)}>
+              {zone.svgPaths.map((d, i) => (
+                <path
+                  key={i}
+                  d={d}
+                  fill="transparent"
+                  stroke="transparent"
+                  strokeWidth={2}
+                  className="cursor-pointer transition"
+                  onMouseEnter={e => e.currentTarget.setAttribute("stroke", "#4ade80")}
+                  onMouseLeave={e => e.currentTarget.setAttribute("stroke", "transparent")}
+                />
+              ))}
+            </g>
+          ))}
+        </svg>
       </div>
 
-      {/* Séquence affichée */}
-      <div className="mt-6 text-lg flex flex-col items-center">
-        <div className="font-semibold">Sequence :</div>
-        {sequence.length > 0 ? (
-          <ul className="mt-2 space-y-1 text-white">
-            {sequence.map((z, i) => (
-              <li key={z.id} className="flex items-center gap-2">
-                <span className="text-gray-500">{i + 1}.</span>
-                <span>{z.label}</span>
+      <div className="mt-4 w-[300px]">
+        <ul className="space-y-1">
+          {[0,1,2,3,4,5].map(i => {
+            const zone = selected[i] ? zones.find(z => z.id === selected[i]) : null;
+            return (
+              <li key={i} className="flex items-center gap-2">
+                <span className="w-6 text-gray-500">{i + 1}.</span>
+                <span
+                  className="flex-1 text-green-400"
+                  style={{ fontFamily: '"OCR A BT", monospace' }}
+                >
+                  {zone ? zone.label : "-"}
+                </span>
               </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="text-gray-500"></div>
-        )}
+            );
+          })}
+        </ul>
       </div>
 
-      {/* Bouton reset */}
       <button
-        onClick={reset}
+        onClick={() => setSelected([])}
         className="mt-4 px-6 py-2 bg-gray-800 text-white rounded-xl shadow hover:bg-gray-700 transition"
       >
         Reset
@@ -84,5 +86,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
